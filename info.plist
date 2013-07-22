@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.dropmark.alfred.gif</string>
+	<key>connections</key>
+	<dict>
+		<key>29BDB872-5A02-465E-AB4F-EDE3D16B9EB1</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9DE0D9E3-371B-4AFF-9A4F-E6BBC18461FF</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Dropmark</string>
+	<key>description</key>
+	<string>GIF search for Alfred, powered by Dropmark</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>GIF</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>9DE0D9E3-371B-4AFF-9A4F-E6BBC18461FF</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>keyword</key>
+				<string>gif</string>
+				<key>runningsubtext</key>
+				<string>Please wait...</string>
+				<key>script</key>
+				<string>collection = "http://skylar.dropmark.com/133727"
+
+# Replace above URL with your own (public or global) Dropmark collection
+
+
+
+require 'net/http'
+require 'rexml/document'
+
+query = Regexp.new("{query}", Regexp::IGNORECASE)
+
+cache_file = "#{File.basename(collection)}.xml"
+cache_time = 300
+
+if File.exists?(cache_file) &amp;&amp; File.mtime(cache_file) &gt; Time.now - cache_time
+  xml_data = File.read(cache_file)
+else
+  xml_data = Net::HTTP.get_response(URI.parse("#{collection}.rss")).body
+  File.open(cache_file, 'w') { |file| file.write xml_data }
+end
+
+rss = REXML::Document.new(xml_data)
+results = REXML::Document.new('&lt;items/&gt;')
+
+rss.each_element('rss/channel/item') do |item|
+  if (links = item.get_elements('link')).size &gt; 0 &amp;&amp; (query == // || query.match(item.to_s))
+    link = links[0].text
+
+	result = REXML::Element.new 'item', results.root
+    result.add_attribute 'arg', link
+    result.add_attribute 'autocomplete', link
+
+    title = REXML::Element.new 'title', result
+    title.text = item.get_elements('title')[0].text
+
+    subtitle = REXML::Element.new 'subtitle', result
+    subtitle.text = link
+	
+    icon = REXML::Element.new 'icon', result
+    icon.add_attribute 'type', 'filetype'
+    icon.text = File.extname link
+  end
+end
+
+puts results.to_s</string>
+				<key>subtext</key>
+				<string>Find GIFs in Dropmark</string>
+				<key>title</key>
+				<string>gif</string>
+				<key>type</key>
+				<integer>2</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>29BDB872-5A02-465E-AB4F-EDE3D16B9EB1</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>29BDB872-5A02-465E-AB4F-EDE3D16B9EB1</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>9DE0D9E3-371B-4AFF-9A4F-E6BBC18461FF</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>http://dropmark.com</string>
+</dict>
+</plist>
