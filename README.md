@@ -7,8 +7,8 @@ GIF search workflow for [Alfred](http://www.alfredapp.com), powered by [Dropmark
 Instructions
 ------------
 
-Double click GIF.alfredworkflow to install workflow.
+Download and install [GIF.alfredworkflow](https://github.com/Dropmark/alfred-gif/releases/download/v0.8/GIF.alfredworkflow) workflow package.
 
-Replace collection URL (ie. "http://skylar.dropmark.com/133727") with your own Dropmark collection. 
+Replace collection URL (ie. "http://skylar.dropmark.com/133727") within the Script Filter with your own Dropmark collection. 
 
 Note: Collection must be set to public or global (not private) in order for Alfred to access it.
