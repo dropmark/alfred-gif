@@ -58,48 +58,10 @@
 				<string>collection = "http://skylar.dropmark.com/133727"
 
 # Replace above URL with your own (public or global) Dropmark collection
-
-
-
-require 'net/http'
-require 'rexml/document'
-
-query = Regexp.new("{query}", Regexp::IGNORECASE)
-
-cache_file = "#{File.basename(collection)}.xml"
-cache_time = 300
-
-if File.exists?(cache_file) &amp;&amp; File.mtime(cache_file) &gt; Time.now - cache_time
-  xml_data = File.read(cache_file)
-else
-  xml_data = Net::HTTP.get_response(URI.parse("#{collection}.rss")).body
-  File.open(cache_file, 'w') { |file| file.write xml_data }
-end
-
-rss = REXML::Document.new(xml_data)
-results = REXML::Document.new('&lt;items/&gt;')
-
-rss.each_element('rss/channel/item') do |item|
-  if (links = item.get_elements('link')).size &gt; 0 &amp;&amp; (query == // || query.match(item.to_s))
-    link = links[0].text
-
-	result = REXML::Element.new 'item', results.root
-    result.add_attribute 'arg', link
-    result.add_attribute 'autocomplete', link
-
-    title = REXML::Element.new 'title', result
-    title.text = item.get_elements('title')[0].text
-
-    subtitle = REXML::Element.new 'subtitle', result
-    subtitle.text = link
-	
-    icon = REXML::Element.new 'icon', result
-    icon.add_attribute 'type', 'filetype'
-    icon.text = File.extname link
-  end
-end
-
-puts results.to_s</string>
+# More: https://github.com/Dropmark/alfred-gif
+#
+require 'gif.rb'
+puts gif collection, "{query}"</string>
 				<key>subtext</key>
 				<string>Find GIFs in Dropmark</string>
 				<key>title</key>
