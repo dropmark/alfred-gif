@@ -60,7 +60,8 @@
 # Replace above URL with your own (public or global) Dropmark collection
 # More: https://github.com/Dropmark/alfred-gif
 #
-require 'gif.rb'
+require File.join(File.dirname(__FILE__), "gif.rb")
+
 puts gif collection, "{query}"</string>
 				<key>subtext</key>
 				<string>Find GIFs in Dropmark</string>
